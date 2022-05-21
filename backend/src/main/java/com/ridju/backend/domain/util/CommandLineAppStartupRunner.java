@@ -32,18 +32,6 @@ public class CommandLineAppStartupRunner implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception{
 
-//        if(!roleRepository.existsByName(ERole.SUPERUSER.label)) {
-//            roleRepository.save(new Role(ERole.SUPERUSER.label));
-//        }
-//
-//        if(!roleRepository.existsByName(ERole.STAFF.label)) {
-//            roleRepository.save(new Role(ERole.STAFF.label));
-//        }
-//
-//        if(!roleRepository.existsByName(ERole.USER.label)) {
-//            roleRepository.save(new Role(ERole.USER.label));
-//        }
-
         if(!userRepository.existsByUsername("admin")) {
             MyUser admin = new MyUser();
             admin.setUsername("admin");
