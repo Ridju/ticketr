@@ -1,5 +1,6 @@
 package com.ridju.backend.config;
 
+import com.ridju.backend.domain.jwt.JwtRequestFilter;
 import com.ridju.backend.domain.util.ERole;
 import com.ridju.backend.service.MyUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +15,12 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
 @Configuration
@@ -32,6 +35,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     MyUserDetailsService userDetailsService;
 
+    @Autowired
+    private JwtRequestFilter jwtRequestFilter;
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService);
@@ -39,9 +45,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable();
-        http.authorizeRequests().antMatchers("/authenticate").permitAll().and().authorizeRequests().antMatchers("/**").permitAll().and()
-                .authorizeRequests().antMatchers("/console/**").permitAll();
+        http.csrf().disable()
+                .authorizeRequests().antMatchers("/authenticate").permitAll()
+                .anyRequest().authenticated()
+                .and().sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
         http.headers().frameOptions().disable();
     }
 

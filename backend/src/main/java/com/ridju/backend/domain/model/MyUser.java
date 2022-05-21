@@ -1,5 +1,6 @@
 package com.ridju.backend.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
@@ -12,22 +13,22 @@ public class MyUser {
     @GeneratedValue(strategy = GenerationType.AUTO)
     public long Id;
 
-    @Column()
+    @Column(unique = true)
     private String username;
 
     @Column
     private String email;
 
     @Column
+    @JsonIgnore
     private String password;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "Id"),
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "Id")
     )
-    @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private Collection<Role> roles;
 
     public long getId() {
