@@ -20,9 +20,9 @@ import java.util.List;
 @Service
 public class MyUserService {
 
-    private MyUserRepository userRepository;
-    private PasswordEncoder passwordEncoder;
-    private RoleRepository roleRepository;
+    private final MyUserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final RoleRepository roleRepository;
 
     public MyUserService(
             MyUserRepository userRepository,
@@ -36,7 +36,7 @@ public class MyUserService {
 
     public UserDTO createNewUser(CreateUserDTO user) {
         Role userRole = roleRepository.findByName(ERole.USER.label).get();
-        if(userRepository.existsByUsername(user.getUsername())) {
+        if (userRepository.existsByUsername(user.getUsername())) {
             throw new UserAlreadyExistsException("user with the username " + user.getUsername() + " already exists");
         }
         MyUser newUser = new MyUser();
@@ -49,7 +49,7 @@ public class MyUserService {
 
     public List<UserDTO> getAllUsers() {
         List<UserDTO> userlist = new ArrayList<>();
-        for(MyUser user: userRepository.findAll()) {
+        for (MyUser user : userRepository.findAll()) {
             userlist.add(new UserDTO(user));
         }
         return userlist;
@@ -66,13 +66,13 @@ public class MyUserService {
         MyUser user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User with id " + id + " could not be found"));
 
-        if(!userInfo.getEmail().isEmpty())
+        if (!userInfo.getEmail().isEmpty())
             user.setEmail(userInfo.getEmail());
 
-        if(!userInfo.getPassword().isEmpty())
+        if (!userInfo.getPassword().isEmpty())
             user.setPassword(passwordEncoder.encode(userInfo.getPassword()));
 
-        if(!userInfo.getRole().getName().isEmpty())
+        if (!userInfo.getRole().getName().isEmpty())
             user.setRoles(Arrays.asList(userInfo.getRole()));
 
         userRepository.save(user);

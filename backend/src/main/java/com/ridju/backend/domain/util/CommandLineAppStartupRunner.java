@@ -14,9 +14,9 @@ import java.util.Arrays;
 @Component
 public class CommandLineAppStartupRunner implements CommandLineRunner {
 
-    private MyUserRepository userRepository;
-    private RoleRepository roleRepository;
-    private PasswordEncoder passwordEncoder;
+    private final MyUserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
     public CommandLineAppStartupRunner(
@@ -30,21 +30,21 @@ public class CommandLineAppStartupRunner implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) throws Exception{
+    public void run(String... args) throws Exception {
 
-        if(!roleRepository.existsByName(ERole.ADMIN.label)) {
+        if (!roleRepository.existsByName(ERole.ADMIN.label)) {
             roleRepository.save(new Role(ERole.ADMIN.label));
         }
 
-        if(!roleRepository.existsByName(ERole.STAFF.label)) {
+        if (!roleRepository.existsByName(ERole.STAFF.label)) {
             roleRepository.save(new Role(ERole.STAFF.label));
         }
 
-        if(!roleRepository.existsByName(ERole.USER.label)) {
+        if (!roleRepository.existsByName(ERole.USER.label)) {
             roleRepository.save(new Role(ERole.USER.label));
         }
 
-        if(!userRepository.existsByUsername("admin")) {
+        if (!userRepository.existsByUsername("admin")) {
             Role adminRole = roleRepository.findByName(ERole.ADMIN.label).get();
             MyUser admin = new MyUser();
             admin.setUsername("admin");

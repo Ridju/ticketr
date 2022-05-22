@@ -1,9 +1,6 @@
 package com.ridju.backend.config;
 
-import com.ridju.backend.domain.exceptions.PasswordsDontMatchException;
-import com.ridju.backend.domain.exceptions.UserAlreadyExistsException;
-import com.ridju.backend.domain.exceptions.UserNotFoundException;
-import com.ridju.backend.domain.exceptions.UserRoleChangeNotAllowedException;
+import com.ridju.backend.domain.exceptions.*;
 import com.ridju.backend.domain.util.ApiError;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -52,6 +49,13 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(UserRoleChangeNotAllowedException.class)
     protected ResponseEntity<Object> handleEntityNotFound(UserRoleChangeNotAllowedException ex) {
+        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST);
+        apiError.setMessage(ex.getMessage());
+        return buildResponseEntity(apiError);
+    }
+
+    @ExceptionHandler(TicketNotFoundException.class)
+    protected ResponseEntity<Object> handleEntityNotFound(TicketNotFoundException ex) {
         ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST);
         apiError.setMessage(ex.getMessage());
         return buildResponseEntity(apiError);

@@ -8,7 +8,7 @@ public enum ERole {
 
     public final String label;
 
-    private ERole(String label) {
+    ERole(String label) {
         this.label = label;
     }
 }

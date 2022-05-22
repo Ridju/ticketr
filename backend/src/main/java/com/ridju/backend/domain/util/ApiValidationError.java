@@ -1,6 +1,7 @@
 package com.ridju.backend.domain.util;
 
-abstract class ApiSubError {}
+abstract class ApiSubError {
+}
 
 public class ApiValidationError extends ApiSubError {
     private String object;

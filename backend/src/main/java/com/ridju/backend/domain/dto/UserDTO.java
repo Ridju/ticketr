@@ -1,9 +1,6 @@
 package com.ridju.backend.domain.dto;
 
 import com.ridju.backend.domain.model.MyUser;
-import com.ridju.backend.domain.model.Role;
-
-import java.util.Collection;
 
 public class UserDTO {
 
@@ -12,7 +9,8 @@ public class UserDTO {
     private String email;
     private String role;
 
-    public UserDTO() {}
+    public UserDTO() {
+    }
 
     public UserDTO(MyUser user) {
         this.Id = user.getId();

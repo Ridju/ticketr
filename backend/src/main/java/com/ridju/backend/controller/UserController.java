@@ -22,18 +22,18 @@ import java.util.List;
 @RestController()
 public class UserController {
 
-    private MyUserService userService;
-    private AuthenticationManager authenticationManager;
-    private UserDetailsService userDetailsService;
-    private JwtUtil jwtTokenUtil;
+    private final MyUserService userService;
+    private final AuthenticationManager authenticationManager;
+    private final UserDetailsService userDetailsService;
+    private final JwtUtil jwtTokenUtil;
 
     @Autowired
     public UserController(
-        MyUserService userService,
-        AuthenticationManager authenticationManager,
-        UserDetailsService userDetailsService,
-        JwtUtil jwtTokenUtil
-    ){
+            MyUserService userService,
+            AuthenticationManager authenticationManager,
+            UserDetailsService userDetailsService,
+            JwtUtil jwtTokenUtil
+    ) {
         this.userService = userService;
         this.authenticationManager = authenticationManager;
         this.userDetailsService = userDetailsService;
@@ -45,13 +45,13 @@ public class UserController {
             @RequestBody AuthenticationRequest authenticationRequest,
             HttpServletResponse response
     ) throws Exception {
-        try{
+        try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             authenticationRequest.getUsername(),
                             authenticationRequest.getPassword()
                     ));
-        }catch (Exception e) {
+        } catch (Exception e) {
             throw new Exception("Incorrect username or password", e);
         }
 
@@ -71,7 +71,7 @@ public class UserController {
             @RequestBody CreateUserDTO createUserDTO,
             HttpServletResponse response
     ) throws Exception {
-        if(!createUserDTO.getPassword().equals(createUserDTO.getCheckpassword()))
+        if (!createUserDTO.getPassword().equals(createUserDTO.getCheckpassword()))
             throw new PasswordsDontMatchException("Passwords dont match");
         UserDTO user = userService.createNewUser(createUserDTO);
         return ResponseEntity.ok(user);
@@ -94,7 +94,7 @@ public class UserController {
     @Secured("ROLE_ADMIN")
     @PutMapping("/user/{id}")
     public ResponseEntity<UserDTO> updateUser(@PathVariable long id, @RequestBody UpdateUserDTO userInfo) {
-        if(userInfo.getRole().getName().equals(ERole.ADMIN.label)){
+        if (userInfo.getRole().getName().equals(ERole.ADMIN.label)) {
             throw new UserRoleChangeNotAllowedException("Cannot assign role ADMIN to anyone");
         }
         UserDTO updatedUser = userService.updateUser(id, userInfo);

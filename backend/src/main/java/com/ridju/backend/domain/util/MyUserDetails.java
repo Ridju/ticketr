@@ -12,17 +12,17 @@ import java.util.List;
 
 public class MyUserDetails implements UserDetails {
 
-    private String username;
-    private String password;
-    private boolean active;
-    private List<GrantedAuthority> authorityList;
+    private final String username;
+    private final String password;
+    private final boolean active;
+    private final List<GrantedAuthority> authorityList;
 
     public MyUserDetails(MyUser user) {
         this.username = user.getUsername();
         this.password = user.getPassword();
         this.active = true;
         this.authorityList = new ArrayList<>();
-        for(Role role : user.getRoles()) {
+        for (Role role : user.getRoles()) {
             this.authorityList.add(new SimpleGrantedAuthority("ROLE_" + role.getName()));
         }
     }
