@@ -1,8 +1,7 @@
 package com.ridju.backend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ridju.backend.domain.dto.LoginDTO;
-import com.ridju.backend.domain.model.MyUser;
+import com.ridju.backend.domain.dto.CreateUserDTO;
 import com.ridju.backend.domain.util.ERole;
 import com.ridju.backend.repository.MyUserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,9 +15,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import static org.hamcrest.Matchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -47,7 +45,7 @@ public class UserControllerIntegrationTest {
     @Test
     @WithMockUser(username = "admin", roles={"ADMIN"})
     public void givenUserObject_whenCreateUser_thenReturnSavedEmployee() throws Exception {
-        LoginDTO login = new LoginDTO();
+        CreateUserDTO login = new CreateUserDTO();
         login.setUsername(this.userName);
         login.setEmail(this.email);
         login.setPassword(this.password);
@@ -67,7 +65,7 @@ public class UserControllerIntegrationTest {
     @Test
     @WithMockUser(username = "user", roles={"USER"})
     public void givenUserAccount_whenCreateUser_thenReturnNotAllowed() throws Exception {
-        LoginDTO login = new LoginDTO();
+        CreateUserDTO login = new CreateUserDTO();
         login.setUsername(this.userName);
         login.setEmail(this.email);
         login.setPassword(this.password);
@@ -78,5 +76,42 @@ public class UserControllerIntegrationTest {
                 .content(objectMapper.writeValueAsString(login)));
 
         response.andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    @WithMockUser(username = "user", roles={"ADMIN"})
+    public void givenUserAccount_whenGetAllUsers_thenReturnAllUsers() throws Exception {
+        CreateUserDTO login = new CreateUserDTO();
+        login.setUsername(this.userName);
+        login.setEmail(this.email);
+        login.setPassword(this.password);
+        login.setCheckpassword(this.password);
+
+        ResultActions response = mockMvc.perform(post("/user")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(login)));
+
+        ResultActions getAllResponse = mockMvc.perform(get("/users"));
+
+        getAllResponse.andExpect(status().isOk())
+                .andExpect(jsonPath("$.*", hasSize(1)));
+    }
+
+    @Test
+    @WithMockUser(username = "user", roles={"USER"})
+    public void givenUserWithRoleUSER_whenGetAllUsers_thenFail() throws Exception {
+        CreateUserDTO login = new CreateUserDTO();
+        login.setUsername(this.userName);
+        login.setEmail(this.email);
+        login.setPassword(this.password);
+        login.setCheckpassword(this.password);
+
+        ResultActions response = mockMvc.perform(post("/user")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(login)));
+
+        ResultActions getAllResponse = mockMvc.perform(get("/users"));
+
+        getAllResponse.andExpect(status().is4xxClientError());
     }
 }

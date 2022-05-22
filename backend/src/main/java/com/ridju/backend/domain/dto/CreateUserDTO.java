@@ -1,14 +1,14 @@
 package com.ridju.backend.domain.dto;
 
-public class LoginDTO {
+public class CreateUserDTO {
     private String username;
     private String email;
     private String password;
     private String checkpassword;
 
-    public LoginDTO() {}
+    public CreateUserDTO() {}
 
-    public LoginDTO(String username, String email, String password, String checkpassword) {
+    public CreateUserDTO(String username, String email, String password, String checkpassword) {
         this.username = username;
         this.email = email;
         this.password = password;
